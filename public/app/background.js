@@ -1,15 +1,14 @@
 (function() {
 
-    // on hyperlink click open url
+    // on hyperlink click start listener
     chrome.history.onVisited.addListener(function(HistoryItem) {
-
+        // get the tab that was opened and close it
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-
-            // since only one tab should be active and in the current window at once
-            // the return variable should only have one entry
             var currentURL = tabs[0].url;
             console.log(currentURL);
-            chrome.tabs.remove(tabs[0].id);
+            if (HistoryItem.url.includes("?prokseelink")) {
+                chrome.tabs.remove(tabs[0].id);
+            }
             return;
             //if (currentURL = "https://proksee.co/") {
             //    console.log("we are in proksee site");

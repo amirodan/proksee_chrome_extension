@@ -25,6 +25,7 @@
     "proxy",
     "tabs",
     "browsingData",
-    "history"
+    "history",
+    "proxy"
 ]
 }
