@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
+/*global chrome*/
+import React, { Component } from 'react';
 import './App.css';
+import TrafficContainer from "./components/TrafficContainer";
+import {getCurrentTab} from "./common/Utils";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      traffic: {}
+    };
+  }
+
+  componentDidMount() {
+    getCurrentTab((tab) => {
+      chrome.runtime.sendMessage({type: 'popupInit', tabId: tab.id}, (response) => {
+        if (response) {
+          this.setState({
+            traffic: Object.assign(this.state.traffic, response)
+          });
+        }
+      });
+    });
+  }
+
+  render() {
+    return (
+        <div className="App">
+          <header className="App-header">
+            <h1 className="App-title">Proksee Extension</h1>
+          </header>
+          <p className="App-intro">
+            <TrafficContainer traffic={this.state.traffic}/>
+          </p>
+        </div>
+    );
+  }
 }
 
 export default App;
