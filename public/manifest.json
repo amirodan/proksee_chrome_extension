@@ -19,6 +19,8 @@
   },
   "content_security_policy": "script-src 'self' 'sha256-xy5KFLewWiWjqZiQJeZhppRD7BBsofI+Ou4yfFu3WFc='; object-src 'self'",
   "permissions": [ "webRequest",
+    "webRequestBlocking",
+    "<all_urls>",
     "*://developer.mozilla.org/",
     "proxy",
     "tabs",
