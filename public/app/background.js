@@ -2,10 +2,14 @@
 (function() {
     var proxyconfig = {};
 
-    // create listener for tab change
+    // create listener for tab change - if tab is a proksee tab reload proxy settings
     chrome.tabs.onActivated.addListener(({tabId, windowId}) =>  {
     console.log(tabId);
-    //console.log(url);
+    if (tabId in proxyconfig) {
+        console.log("found tabid in proxyconfig dict")
+        console.log(proxyconfig[tabId])
+    }
+
     });
     // create listener for hyperlink click
     chrome.history.onVisited.addListener(function(HistoryItem) {
@@ -46,11 +50,11 @@
                 };
             console.log("our saved proxy info - tabid:", prokseetab)
             console.log(proxyconfig[prokseetab]);
-            });
-            //chrome.proxy.settings.set(
-            //    {value: proxyconfig, scope: 'regular'},
-            //    function() {});
 
+            chrome.proxy.settings.set(
+                {value: proxyconfig[prokseetab], scope: 'regular'},
+                function() {});
+            });
             return;
         };
 
