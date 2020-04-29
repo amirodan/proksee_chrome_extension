@@ -2,18 +2,29 @@
 (function() {
     var proxyconfig = {};
 
-    // create listener for tab change - if tab is a proksee tab reload proxy settings
+    // create listener for tab change - if tab is a proksee tab reload proxy settings, if not direct mode
     chrome.tabs.onActivated.addListener(({tabId, windowId}) =>  {
     console.log(tabId);
     if (tabId in proxyconfig) {
         console.log("found tabid in proxyconfig dict")
         console.log(proxyconfig[tabId])
+        chrome.proxy.settings.set(
+            {value: proxyconfig[tabId], scope: 'regular'},
+            function() {});
     }
-
+    else {
+        var directconfig =
+            {
+                mode: "direct"
+            };
+        chrome.proxy.settings.set(
+            {value: directconfig, scope: 'regular'},
+            function() {});
+    }
     });
     // create listener for hyperlink click
     chrome.history.onVisited.addListener(function(HistoryItem) {
-        // get the tab that was opened (current tab) and close it
+        // if this is a proksee link, get the tab that was opened (current tab) and close it
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             var currentURL = tabs[0].url;
             console.log(currentURL);
@@ -50,7 +61,7 @@
                 };
             console.log("our saved proxy info - tabid:", prokseetab)
             console.log(proxyconfig[prokseetab]);
-
+            // change proxy settings to gathered proxy info
             chrome.proxy.settings.set(
                 {value: proxyconfig[prokseetab], scope: 'regular'},
                 function() {});
