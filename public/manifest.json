@@ -14,6 +14,7 @@
     "48": "logo-small.png",
     "128": "logo-small.png"
   },
+  "incognito":"spanning",
   "background": {
     "scripts": ["app/background.js"]
   },
@@ -26,6 +27,7 @@
     "tabs",
     "browsingData",
     "history",
-    "proxy"
+    "proxy",
+    "windows"
 ]
 }
