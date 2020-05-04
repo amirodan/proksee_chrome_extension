@@ -5,8 +5,12 @@
     // create listener for focus change - when we switch between chrome windows we need to change the proxy settings
     chrome.windows.onFocusChanged.addListener(function(window) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            try {
             var focustabid = tabs[0].id;
-            console.log("focus tab id: " + focustabid);
+            console.log("focus tab id: " + focustabid);}
+            catch(err) {
+                return
+            }
 
             if (focustabid in proxyconfig) {
                 console.log("found focus tabid in proxyconfig dict")
@@ -29,7 +33,7 @@
 
     // create listener for tab change - if tab is a proksee tab reload proxy settings, if not direct mode
     chrome.tabs.onActivated.addListener(({tabId, windowId}) =>  {
-    console.log("tab activated id: "tabId);
+    console.log("tab activated id: "+ tabId);
     if (tabId in proxyconfig) {
         console.log("found tabid in proxyconfig dict")
         console.log(proxyconfig[tabId])
@@ -53,14 +57,14 @@
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             var currentURL = tabs[0].url;
             console.log("visited hyperlink url: " + currentURL);
-            if (HistoryItem.url.includes("?prokseelink")) {
+            if (HistoryItem.url.includes("&prokseelink")) {
                 chrome.tabs.remove(tabs[0].id);
             }
             return;
         });
 
         // gather proxy info and open incognito tab
-        if (HistoryItem.url.includes("?prokseelink")) {
+        if (HistoryItem.url.includes("&prokseelink")) {
             console.log("this is a proksee link!");
             var newURL = "http://stackoverflow.com/";
             chrome.windows.create({ url: newURL, incognito: true });
@@ -70,8 +74,14 @@
                 var prokseetab = tabs[0].id;
                 console.log("our proksee tab id:" + prokseetab)
 
+                // extract proxy parameters from link
+                console.log("clicked url: " + HistoryItem.url)
+                const params = new URLSearchParams(HistoryItem.url);
 
-            // change the proxy to the one in the proksee link parameter and
+                var proxy_ip = params.get('ip')
+                var proxy_port = parseInt(params.get('port'))
+                console.log("proxy port: " + proxy_port);
+                // change the proxy to the one in the proksee link parameter and
                 // save it with the current tabid
             proxyconfig[prokseetab] =
                 {
@@ -79,8 +89,8 @@
                     rules: {
                         proxyForHttp: {
                             scheme: "http",
-                            host: "127.0.0.1",
-                            port: 8080
+                            host: proxy_ip,
+                            port: proxy_port
                         },
                         bypassList: ["foobar.com"]
                     }
