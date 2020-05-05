@@ -87,8 +87,7 @@
                 {
                     mode: "fixed_servers",
                     rules: {
-                        proxyForHttp: {
-                            scheme: "http",
+                        singleProxy: {
                             host: proxy_ip,
                             port: proxy_port
                         },

@@ -28,6 +28,8 @@
     "browsingData",
     "history",
     "proxy",
-    "windows"
+    "windows",
+    "http://*/",
+    "https://*/"
 ]
 }
