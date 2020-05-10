@@ -66,7 +66,9 @@
         // gather proxy info and open incognito tab
         if (HistoryItem.url.includes("&prokseelink")) {
             console.log("this is a proksee link!");
-            var newURL = "http://stackoverflow.com/";
+            var n = HistoryItem.url.indexOf('&prokseelink');
+            var newURL = HistoryItem.url.substring(0, n != -1 ? n : HistoryItem.url.length);
+            //var newURL = "http://stackoverflow.com/";
             chrome.windows.create({ url: newURL, incognito: true });
 
             // get our new prokseetab id
